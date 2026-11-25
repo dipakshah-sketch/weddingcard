@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation | Rambabau & Sweat</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cinzel, Playfair Display, Great Vibes, and Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royalCream: '#FCF7ED',
+                        royalPaper: '#F7EFE0',
+                        royalMaroon: '#6B141A',
+                        deepMaroon: '#470B10',
+                        royalGold: '#C59B27',
+                        brightGold: '#E8C55A',
+                        darkGold: '#967114',
+                        marigold: '#E66C1F',
+                        peacockBlue: '#184E59'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        script: ['Great Vibes', 'cursive'],
+                        garamond: ['Cormorant Garamond', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Royal Ornamentation, Shimmer & Animations */
+        body {
+            background-color: #FCF7ED;
+            color: #470B10;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Metallic Gold Foil Text Effect */
+        .gold-foil {
+            background: linear-gradient(135deg, #967114 0%, #DFB74C 25%, #FFF2B2 50%, #C59B27 75%, #8A640D 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 2px 10px rgba(197, 155, 39, 0.18);
+        }
+
+        .gold-foil-bg {
+            background: linear-gradient(135deg, #8A640D 0%, #D4AF37 45%, #F3D97E 55%, #AA8018 100%);
+        }
+
+        /* Ornate Double Border Card Frame */
+        .royal-frame {
+            border: 2px solid #C59B27;
+            box-shadow: 
+                inset 0 0 0 6px #FCF7ED,
+                inset 0 0 0 8px #6B141A,
+                inset 0 0 0 12px #FCF7ED,
+                inset 0 0 0 13px rgba(197, 155, 39, 0.5),
+                0 20px 50px rgba(71, 11, 16, 0.15);
+            position: relative;
+        }
+
+        /* Mandala Slow Rotation */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 45s linear infinite;
+        }
+
+        /* Gentle Pulse for Wax Seal */
+        @keyframes sealPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(197, 155, 39, 0.6); }
+            50% { transform: scale(1.06); box-shadow: 0 0 40px rgba(232, 197, 90, 0.9); }
+        }
+        .wax-seal {
+            animation: sealPulse 2.8s ease-in-out infinite;
+        }
+
+        /* Curtain / Envelope Overlay Transition */
+        #invitation-overlay {
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1s ease;
+        }
+        #invitation-overlay.opened {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Fade Up Reveal */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Subtle Damask Background Pattern */
+        .bg-royal-pattern {
+            background-image: radial-gradient(rgba(197, 155, 39, 0.14) 1px, transparent 1px),
+                              radial-gradient(rgba(107, 20, 26, 0.06) 1px, #FCF7ED 1px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+        }
+
+        /* Floating Petals Canvas */
+        #petals-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7EFE0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C59B27;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-royal-pattern font-garamond selection:bg-royalMaroon selection:text-royalCream">
+
+    <!-- Floating Marigold & Rose Petals Canvas -->
+    <canvas id="petals-canvas"></canvas>
+
+    <!-- Toast Notification Banner (No alert() used) -->
+    <div id="toast-box" class="fixed top-5 left-1/2 -translate-x-1/2 z-[100] hidden transition-all duration-300">
+        <div class="bg-deepMaroon text-royalCream border-2 border-royalGold px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-cinzel text-sm tracking-wider">
+            <span class="text-brightGold text-lg">✦</span>
+            <span id="toast-message">Notification</span>
+        </div>
+    </div>
+
+    <!-- Floating Music & Share Controls -->
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col sm:flex-row items-end sm:items-center gap-3">
+        <!-- Share Link Button -->
+        <button id="share-btn" onclick="copyInviteLink()" class="bg-royalCream/95 backdrop-blur-md text-royalMaroon border-2 border-royalGold hover:bg-royalMaroon hover:text-royalCream transition-all duration-300 px-4 py-3 rounded-full shadow-xl flex items-center gap-2 font-cinzel text-xs font-semibold tracking-wider cursor-pointer" title="Copy Invitation Link">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            <span>Share Card</span>
+        </button>
+
+        <!-- Music Toggle Button -->
+        <button id="music-toggle-btn" onclick="toggleMusic()" class="gold-foil-bg text-deepMaroon border-2 border-royalCream px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-cinzel text-xs font-bold tracking-wider hover:scale-105 transition-transform cursor-pointer" title="Play / Mute Wedding Music">
+            <span id="music-icon-playing" class="hidden flex items-center gap-1.5">
+                <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+                <span>Music On</span>
+            </span>
+            <span id="music-icon-muted" class="flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                </svg>
+                <span>Play Music</span>
+            </span>
+        </button>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 1. LUXURY ENVELOPE / CURTAIN HERO OVERLAY                             -->
+    <!-- ===================================================================== -->
+    <div id="invitation-overlay" class="fixed inset-0 z-50 bg-gradient-to-b from-deepMaroon via-royalMaroon to-deepMaroon flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+        <!-- Decorative Rotating Background Mandala -->
+        <svg class="w-[520px] h-[520px] sm:w-[700px] sm:h-[700px] text-royalGold/15 animate-spin-slow absolute pointer-events-none" viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="95" stroke="currentColor" stroke-width="0.6" stroke-dasharray="3 3"/>
+            <circle cx="100" cy="100" r="80" stroke="currentColor" stroke-width="0.8"/>
+            <circle cx="100" cy="100" r="62" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2 2"/>
+            <path d="M100 5 L112 45 L150 25 L130 63 L175 75 L138 100 L175 125 L130 137 L150 175 L112 155 L100 195 L88 155 L50 175 L70 137 L25 125 L62 100 L25 75 L70 63 L50 25 L88 45 Z" stroke="currentColor" stroke-width="0.6"/>
+            <path d="M100 20 Q120 60 160 50 Q135 85 180 100 Q135 115 160 150 Q120 140 100 180 Q80 140 40 150 Q65 115 20 100 Q65 85 40 50 Q80 60 100 20 Z" stroke="currentColor" stroke-width="0.6"/>
+        </svg>
+
+        <!-- Inner Gold Border Frame -->
+        <div class="relative z-10 max-w-lg w-full border-2 border-royalGold/60 rounded-3xl p-8 sm:p-12 bg-deepMaroon/75 backdrop-blur-sm shadow-2xl">
+            <p class="font-cinzel text-brightGold tracking-[0.3em] text-xs sm:text-sm uppercase mb-3">
+                ॥ श्री गणेशाय नमः ॥
+            </p>
+            <p class="font-playfair italic text-royalCream/90 text-base sm:text-lg mb-4">
+                You are cordially invited to the royal wedding celebration of
+            </p>
+
+            <h1 class="font-cinzel text-4xl sm:text-5xl font-bold gold-foil tracking-wide leading-tight">
+                Rambabau
+            </h1>
+            <div class="font-script text-3xl sm:text-4xl text-brightGold my-1">&amp;</div>
+            <h1 class="font-cinzel text-4xl sm:text-5xl font-bold gold-foil tracking-wide leading-tight mb-8">
+                Sweat
+            </h1>
+
+            <!-- Interactive Royal Wax Seal Button -->
+            <button onclick="openInvitation()" class="wax-seal group relative mx-auto w-28 h-28 sm:w-32 sm:h-32 rounded-full gold-foil-bg border-4 border-royalCream flex flex-col items-center justify-center text-deepMaroon cursor-pointer transition-transform hover:scale-110 focus:outline-none">
+                <span class="font-cinzel font-extrabold text-xl sm:text-2xl tracking-widest">R &amp; S</span>
+                <span class="font-cinzel text-[10px] sm:text-xs font-bold uppercase tracking-wider mt-1 border-t border-deepMaroon/40 pt-1">
+                    Open Card
+                </span>
+            </button>
+
+            <p class="font-garamond text-royalCream/80 text-sm sm:text-base mt-6 tracking-wide">
+                Tap the royal seal to unveil invitation &amp; start celebratory music
+            </p>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 2. MAIN WEDDING INVITATION CARD & WEBSITE CONTENT                     -->
+    <!-- ===================================================================== -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-8 py-10 sm:py-16 relative z-10">
+
+        <!-- HERO / MAIN INVITATION CARD -->
+        <section class="royal-frame bg-royalCream rounded-3xl p-6 sm:p-14 text-center shadow-2xl reveal-up">
+            
+            <!-- Top Marigold Garland & Floral SVG Banner -->
+            <div class="flex justify-center mb-4">
+                <svg class="w-full max-w-md h-16" viewBox="0 0 400 70" fill="none">
+                    <!-- Hanging Marigold Garlands -->
+                    <path d="M20 5 Q110 55 200 15 Q290 55 380 5" stroke="#C59B27" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <path d="M50 5 Q125 42 200 15 Q275 42 350 5" stroke="#6B141A" stroke-width="1"/>
+                    <!-- Marigold Blossoms -->
+                    <circle cx="110" cy="30" r="8" fill="#E66C1F"/>
+                    <circle cx="110" cy="30" r="4" fill="#F3D97E"/>
+                    <circle cx="290" cy="30" r="8" fill="#E66C1F"/>
+                    <circle cx="290" cy="30" r="4" fill="#F3D97E"/>
+                    <circle cx="65" cy="21" r="6" fill="#6B141A"/>
+                    <circle cx="335" cy="21" r="6" fill="#6B141A"/>
+                    <circle cx="155" cy="26" r="6" fill="#C59B27"/>
+                    <circle cx="245" cy="26" r="6" fill="#C59B27"/>
+                    <!-- Center Royal Lotus / Kalash Emblem -->
+                    <path d="M200 6 C206 16, 214 22, 200 32 C186 22, 194 16, 200 6 Z" fill="#6B141A"/>
+                    <path d="M200 12 C212 18, 220 26, 200 34 C180 26, 188 18, 200 12 Z" fill="#E66C1F" opacity="0.85"/>
+                    <circle cx="200" cy="36" r="4" fill="#C59B27"/>
+                </svg>
+            </div>
+
+            <!-- Sacred Invocation -->
+            <p class="font-cinzel text-royalMaroon font-semibold tracking-[0.25em] text-xs sm:text-sm uppercase mb-2">
+                With the Heavenly Blessings of Almighty &amp; Elders
+            </p>
+
+            <!-- Ornate Heading -->
+            <h2 class="font-playfair italic text-royalGold text-2xl sm:text-3xl mb-1">
+                Royal Wedding Invitation
+            </h2>
+
+            <!-- Divider Flourish -->
+            <div class="flex items-center justify-center gap-3 my-4">
+                <span class="h-[1px] w-16 sm:w-28 bg-gradient-to-r from-transparent to-royalGold"></span>
+                <span class="text-royalMaroon text-lg">❖</span>
+                <span class="h-[1px] w-16 sm:w-28 bg-gradient-to-l from-transparent to-royalGold"></span>
+            </div>
+
+            <!-- Couple Names Display -->
+            <div class="my-6 sm:my-8">
+                <h1 class="font-cinzel text-5xl sm:text-7xl font-extrabold gold-foil tracking-wider">
+                    Rambabau
+                </h1>
+                <div class="font-script text-4xl sm:text-6xl text-royalMaroon my-2">
+                    &amp;
+                </div>
+                <h1 class="font-cinzel text-5xl sm:text-7xl font-extrabold gold-foil tracking-wider">
+                    Sweat
+                </h1>
+            </div>
+
+            <!-- Decorative Peacock Motifs Flanking Heartfelt Verse -->
+            <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-4 my-6">
+                <!-- Left Peacock SVG -->
+                <div class="hidden md:flex md:col-span-2 justify-center">
+                    <svg class="w-20 h-24" viewBox="0 0 80 100" fill="none">
+                        <!-- Peacock Tail Plumes -->
+                        <circle cx="25" cy="45" r="18" fill="#184E59" opacity="0.2"/>
+                        <circle cx="20" cy="35" r="5" fill="#184E59"/><circle cx="20" cy="35" r="2" fill="#E8C55A"/>
+                        <circle cx="14" cy="48" r="5" fill="#184E59"/><circle cx="14" cy="48" r="2" fill="#E8C55A"/>
+                        <circle cx="22" cy="60" r="5" fill="#184E59"/><circle cx="22" cy="60" r="2" fill="#E8C55A"/>
+                        <!-- Peacock Body -->
+                        <path d="M45 30 C52 30, 52 45, 48 55 C55 62, 52 75, 40 78 C32 78, 35 62, 42 52 C40 42, 40 30, 45 30 Z" fill="#184E59"/>
+                        <!-- Crown & Beak -->
+                        <path d="M48 32 L55 34 L48 36 Z" fill="#E66C1F"/>
+                        <line x1="44" y1="30" x2="42" y2="23" stroke="#C59B27" stroke-width="1.2"/>
+                        <circle cx="42" cy="22" r="1.5" fill="#6B141A"/>
+                    </svg>
+                </div>
+
+                <!-- Heartfelt Blessing Verse -->
+                <div class="md:col-span-8 px-2">
+                    <p class="font-playfair italic text-lg sm:text-2xl text-deepMaroon leading-relaxed">
+                        “Two souls with but a single thought, two hearts that beat as one. Together with our families, we joyfully invite you to grace our sacred union with your presence, love, and blessings.”
+                    </p>
+                </div>
+
+                <!-- Right Peacock SVG (Mirrored) -->
+                <div class="hidden md:flex md:col-span-2 justify-center">
+                    <svg class="w-20 h-24 transform -scale-x-100" viewBox="0 0 80 100" fill="none">
+                        <circle cx="25" cy="45" r="18" fill="#184E59" opacity="0.2"/>
+                        <circle cx="20" cy="35" r="5" fill="#184E59"/><circle cx="20" cy="35" r="2" fill="#E8C55A"/>
+                        <circle cx="14" cy="48" r="5" fill="#184E59"/><circle cx="14" cy="48" r="2" fill="#E8C55A"/>
+                        <circle cx="22" cy="60" r="5" fill="#184E59"/><circle cx="22" cy="60" r="2" fill="#E8C55A"/>
+                        <path d="M45 30 C52 30, 52 45, 48 55 C55 62, 52 75, 40 78 C32 78, 35 62, 42 52 C40 42, 40 30, 45 30 Z" fill="#184E59"/>
+                        <path d="M48 32 L55 34 L48 36 Z" fill="#E66C1F"/>
+                        <line x1="44" y1="30" x2="42" y2="23" stroke="#C59B27" stroke-width="1.2"/>
+                        <circle cx="42" cy="22" r="1.5" fill="#6B141A"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Customizable Date, Time & Venue Box -->
+            <div class="mt-8 bg-royalPaper/90 border border-royalGold/60 rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto shadow-inner">
+                <div class="flex items-center justify-between mb-4 border-b border-royalGold/30 pb-2">
+                    <span class="font-cinzel text-xs uppercase tracking-widest text-royalMaroon font-bold">
+                        Save The Auspicious Date
+                    </span>
+                    <button onclick="toggleCustomizeModal()" class="text-xs font-cinzel text-darkGold hover:text-royalMaroon underline flex items-center gap-1 cursor-pointer">
+                        <span>✎ Customize Details</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center items-center">
+                    <div>
+                        <p class="font-cinzel text-xs uppercase tracking-widest text-marigold font-bold">Date</p>
+                        <p id="display-date" class="font-playfair font-bold text-xl sm:text-2xl text-deepMaroon mt-1">
+                            14th December 2026
+                        </p>
+                        <p id="display-day" class="font-garamond italic text-base text-royalMaroon">
+                            Monday
+                        </p>
+                    </div>
+
+                    <div class="sm:border-x border-royalGold/40 px-2">
+                        <p class="font-cinzel text-xs uppercase tracking-widest text-marigold font-bold">Muhurat &amp; Time</p>
+                        <p id="display-time" class="font-playfair font-bold text-xl sm:text-2xl text-deepMaroon mt-1">
+                            7:30 PM Onwards
+                        </p>
+                        <p class="font-garamond italic text-base text-royalMaroon">
+                            Baraat &amp; Varmala
+                        </p>
+                    </div>
+
+                    <div>
+                        <p class="font-cinzel text-xs uppercase tracking-widest text-marigold font-bold">Royal Venue</p>
+                        <p id="display-venue" class="font-playfair font-bold text-xl sm:text-2xl text-deepMaroon mt-1">
+                            The Royal Palace Lawn
+                        </p>
+                        <p id="display-city" class="font-garamond italic text-base text-royalMaroon">
+                            Grand Heritage Avenue
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 3. WEDDING FESTIVITIES & EVENTS TIMELINE                              -->
+        <!-- ===================================================================== -->
+        <section class="mt-14 reveal-up">
+            <div class="text-center mb-10">
+                <p class="font-cinzel text-xs tracking-[0.3em] text-marigold uppercase font-bold">
+                    Celebrations &amp; Rituals
+                </p>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-royalMaroon mt-1">
+                    Wedding Festivities
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-royalGold to-transparent mx-auto mt-3"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Event 1: Haldi -->
+                <div class="bg-royalCream border-2 border-royalGold/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-royalGold transition-all relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-marigold/10 group-hover:scale-125 transition-transform"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-marigold/15 border border-marigold/40 flex items-center justify-center text-2xl shrink-0">
+                            🌼
+                        </div>
+                        <div>
+                            <span class="font-cinzel text-xs font-bold tracking-wider text-marigold uppercase">
+                                Morning Ritual
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-deepMaroon">
+                                Haldi &amp; Mehendi
+                            </h3>
+                            <p class="font-playfair font-semibold text-sm text-royalMaroon mt-1">
+                                13th December • 10:30 AM
+                            </p>
+                            <p class="font-garamond text-base text-deepMaroon/85 mt-2">
+                                A vibrant morning filled with turmeric blessings, henna artistry, folk songs, and floral showers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2: Sangeet -->
+                <div class="bg-royalCream border-2 border-royalGold/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-royalGold transition-all relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-royalMaroon/10 group-hover:scale-125 transition-transform"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-royalMaroon/10 border border-royalMaroon/30 flex items-center justify-center text-2xl shrink-0">
+                            🎶
+                        </div>
+                        <div>
+                            <span class="font-cinzel text-xs font-bold tracking-wider text-royalMaroon uppercase">
+                                Musical Evening
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-deepMaroon">
+                                Royal Sangeet Night
+                            </h3>
+                            <p class="font-playfair font-semibold text-sm text-royalMaroon mt-1">
+                                13th December • 7:00 PM
+                            </p>
+                            <p class="font-garamond text-base text-deepMaroon/85 mt-2">
+                                An unforgettable night of music, dance performances, royal feast, and family celebrations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 3: Wedding Ceremony -->
+                <div class="bg-royalCream border-2 border-royalGold/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-royalGold transition-all relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-royalGold/15 group-hover:scale-125 transition-transform"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-royalGold/20 border border-royalGold/50 flex items-center justify-center text-2xl shrink-0">
+                            🔥
+                        </div>
+                        <div>
+                            <span class="font-cinzel text-xs font-bold tracking-wider text-darkGold uppercase">
+                                Sacred Union
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-deepMaroon">
+                                Shubh Vivah (Wedding)
+                            </h3>
+                            <p class="font-playfair font-semibold text-sm text-royalMaroon mt-1">
+                                14th December • 7:30 PM
+                            </p>
+                            <p class="font-garamond text-base text-deepMaroon/85 mt-2">
+                                Grand Baraat welcome followed by Varmala and sacred Vedic Pheras under the mandap.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 4: Reception -->
+                <div class="bg-royalCream border-2 border-royalGold/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:border-royalGold transition-all relative overflow-hidden group">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-peacockBlue/10 group-hover:scale-125 transition-transform"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-peacockBlue/15 border border-peacockBlue/30 flex items-center justify-center text-2xl shrink-0">
+                            👑
+                        </div>
+                        <div>
+                            <span class="font-cinzel text-xs font-bold tracking-wider text-peacockBlue uppercase">
+                                Grand Gala
+                            </span>
+                            <h3 class="font-cinzel text-xl font-bold text-deepMaroon">
+                                Wedding Reception
+                            </h3>
+                            <p class="font-playfair font-semibold text-sm text-royalMaroon mt-1">
+                                15th December • 7:30 PM
+                            </p>
+                            <p class="font-garamond text-base text-deepMaroon/85 mt-2">
+                                Join us as we bless the newlyweds Rambabau &amp; Sweat over an opulent celebratory dinner.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- 4. INTERACTIVE RSVP & LIVE BLESSINGS WALL                             -->
+        <!-- ===================================================================== -->
+        <section class="mt-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start reveal-up">
+            
+            <!-- RSVP & Blessings Form -->
+            <div class="lg:col-span-6 bg-royalCream border-2 border-royalGold rounded-3xl p-6 sm:p-8 shadow-xl">
+                <p class="font-cinzel text-xs tracking-[0.25em] text-marigold uppercase font-bold">
+                    Kindly Respond
+                </p>
+                <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-royalMaroon mt-1 mb-2">
+                    RSVP &amp; Send Blessings
+                </h2>
+                <p class="font-garamond text-base text-deepMaroon/80 mb-6">
+                    Confirm your presence and leave a heartfelt blessing for Rambabau &amp; Sweat.
+                </p>
+
+                <form id="rsvp-form" onsubmit="handleRsvpSubmit(event)" class="space-y-4">
+                    <div>
+                        <label for="guest-name" class="block font-cinzel text-xs font-bold uppercase tracking-wider text-deepMaroon mb-1">
+                            Your Full Name *
+                        </label>
+                        <input type="text" id="guest-name" required placeholder="e.g., Aarav Sharma & Family"
+                            class="w-full px-4 py-3 rounded-xl bg-royalPaper border border-royalGold/60 focus:border-royalMaroon focus:outline-none font-garamond text-lg text-deepMaroon">
+                    </div>
+
+                    <div>
+                        <label for="attendance" class="block font-cinzel text-xs font-bold uppercase tracking-wider text-deepMaroon mb-1">
+                            Will You Join Us? *
+                        </label>
+                        <select id="attendance" required
+                            class="w-full px-4 py-3 rounded-xl bg-royalPaper border border-royalGold/60 focus:border-royalMaroon focus:outline-none font-garamond text-lg text-deepMaroon">
+                            <option value="Joyfully Attending">✨ Joyfully Attending</option>
+                            <option value="Attending with Family">👨‍👩‍👧‍👦 Attending with Family</option>
+                            <option value="Sending Warm Wishes from Afar">💐 Sending Warm Wishes from Afar</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="guest-blessing" class="block font-cinzel text-xs font-bold uppercase tracking-wider text-deepMaroon mb-1">
+                            Your Blessing / Message for the Couple *
+                        </label>
+                        <textarea id="guest-blessing" rows="3" required placeholder="Write your wishes for Rambabau & Sweat..."
+                            class="w-full px-4 py-3 rounded-xl bg-royalPaper border border-royalGold/60 focus:border-royalMaroon focus:outline-none font-garamond text-lg text-deepMaroon"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-royalMaroon hover:bg-deepMaroon text-royalCream border border-royalGold font-cinzel text-sm font-bold tracking-widest uppercase shadow-lg hover:shadow-xl transition-all cursor-pointer">
+                        Send Blessings &amp; Confirm RSVP
+                    </button>
+                </form>
+            </div>
+
+            <!-- Live Blessings Wall -->
+            <div class="lg:col-span-6 bg-royalPaper/95 border-2 border-royalGold/70 rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="font-cinzel text-xs tracking-[0.25em] text-marigold uppercase font-bold">
+                            Wall of Love
+                        </p>
+                        <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-royalMaroon mt-1">
+                            Blessings Wall
+                        </h2>
+                    </div>
+                    <span id="blessing-count" class="bg-royalMaroon text-brightGold font-cinzel text-xs font-bold px-3 py-1 rounded-full">
+                        3 Wishes
+                    </span>
+                </div>
+
+                <div id="blessings-list" class="space-y-4 max-h-[420px] overflow-y-auto pr-2">
+                    <!-- Pre-populated Warm Blessings -->
+                    <div class="bg-royalCream border border-royalGold/40 rounded-2xl p-4 shadow-sm">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <h4 class="font-cinzel font-bold text-sm text-royalMaroon">Sharma &amp; Verma Family</h4>
+                            <span class="text-xs font-cinzel bg-marigold/15 text-marigold px-2.5 py-0.5 rounded-full font-semibold">
+                                ✨ Joyfully Attending
+                            </span>
+                        </div>
+                        <p class="font-playfair italic text-deepMaroon text-base">
+                            “Wishing Rambabau and Sweat a lifetime filled with endless love, laughter, and royal happiness together!”
+                        </p>
+                    </div>
+
+                    <div class="bg-royalCream border border-royalGold/40 rounded-2xl p-4 shadow-sm">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <h4 class="font-cinzel font-bold text-sm text-royalMaroon">Priya &amp; Rohan</h4>
+                            <span class="text-xs font-cinzel bg-marigold/15 text-marigold px-2.5 py-0.5 rounded-full font-semibold">
+                                👨‍👩‍👧‍👦 Attending with Family
+                            </span>
+                        </div>
+                        <p class="font-playfair italic text-deepMaroon text-base">
+                            “May your bond grow stronger with every passing day. Counting down the days to celebrate with you both!”
+                        </p>
+                    </div>
+
+                    <div class="bg-royalCream border border-royalGold/40 rounded-2xl p-4 shadow-sm">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <h4 class="font-cinzel font-bold text-sm text-royalMaroon">Elders &amp; Well-Wishers</h4>
+                            <span class="text-xs font-cinzel bg-marigold/15 text-marigold px-2.5 py-0.5 rounded-full font-semibold">
+                                💐 Warm Blessings
+                            </span>
+                        </div>
+                        <p class="font-playfair italic text-deepMaroon text-base">
+                            “May God shower His choicest blessings upon Rambabau &amp; Sweat as you embark on this beautiful journey.”
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center pb-12 reveal-up">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="h-[1px] w-20 bg-royalGold"></span>
+                <span class="font-script text-3xl text-royalMaroon">Rambabau &amp; Sweat</span>
+                <span class="h-[1px] w-20 bg-royalGold"></span>
+            </div>
+            <p class="font-cinzel text-xs tracking-widest text-deepMaroon/75 uppercase">
+                We eagerly await your gracious presence
+            </p>
+        </footer>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- CUSTOMIZE DATE / VENUE MODAL (OPTIONAL HELPER FOR COUPLE)             -->
+    <!-- ===================================================================== -->
+    <div id="customize-modal" class="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-royalCream border-2 border-royalGold rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-cinzel text-xl font-bold text-royalMaroon">Edit Event Details</h3>
+                <button onclick="toggleCustomizeModal()" class="text-deepMaroon hover:text-royalMaroon text-2xl leading-none cursor-pointer">&times;</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-deepMaroon mb-1">Wedding Date</label>
+                    <input type="text" id="input-date" value="14th December 2026" class="w-full px-3 py-2 rounded-xl bg-royalPaper border border-royalGold/60 font-garamond text-base">
+                </div>
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-deepMaroon mb-1">Day of Week</label>
+                    <input type="text" id="input-day" value="Monday" class="w-full px-3 py-2 rounded-xl bg-royalPaper border border-royalGold/60 font-garamond text-base">
+                </div>
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-deepMaroon mb-1">Time / Muhurat</label>
+                    <input type="text" id="input-time" value="7:30 PM Onwards" class="w-full px-3 py-2 rounded-xl bg-royalPaper border border-royalGold/60 font-garamond text-base">
+                </div>
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-deepMaroon mb-1">Venue Name</label>
+                    <input type="text" id="input-venue" value="The Royal Palace Lawn" class="w-full px-3 py-2 rounded-xl bg-royalPaper border border-royalGold/60 font-garamond text-base">
+                </div>
+                <div>
+                    <label class="block font-cinzel text-xs font-bold text-deepMaroon mb-1">City / Address</label>
+                    <input type="text" id="input-city" value="Grand Heritage Avenue" class="w-full px-3 py-2 rounded-xl bg-royalPaper border border-royalGold/60 font-garamond text-base">
+                </div>
+                <button onclick="saveEventDetails()" class="w-full mt-2 py-3 rounded-xl bg-royalMaroon text-royalCream font-cinzel text-xs font-bold tracking-widest uppercase cursor-pointer hover:bg-deepMaroon">
+                    Update Card Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT: WEB AUDIO CELEBRATORY MUSIC, PETALS & INTERACTIVITY       -->
+    <!-- ===================================================================== -->
+    <script>
+        /* -------------------------------------------------------------------
+         * 1. BUILT-IN CELEBRATORY INDIAN WEDDING MELODY (WEB AUDIO API)
+         * Plays a soothing, festive Raga Yaman / Kalyaani inspired santoor &
+         * temple chime melody with warm tanpura drone—zero external MP3s needed!
+         * ------------------------------------------------------------------- */
+        let audioCtx = null;
+        let isPlayingMusic = false;
+        let melodyInterval = null;
+        let droneOsc1 = null;
+        let droneOsc2 = null;
+        let droneGain = null;
+
+        // Raga Yaman / Festive Indian Wedding Pentatonic-Lydian scale frequencies (Hz)
+        // Sa (C4), Re (D4), Ga (E4), Ma# (F#4), Pa (G4), Dha (A4), Ni (B4), Sa' (C5), Re' (D5), Ga' (E5)
+        const ragaNotes = [
+            261.63, // Sa
+            293.66, // Re
+            329.63, // Ga
+            369.99, // Ma#
+            392.00, // Pa
+            440.00, // Dha
+            493.88, // Ni
+            523.25, // Sa'
+            587.33, // Re'
+            659.25  // Ga'
+        ];
+
+        // Traditional celebratory wedding melody sequence (indices into ragaNotes)
+        const weddingPhrase = [
+            4, 6, 7, 9, 8, 7, 6, 4,
+            2, 4, 6, 7, 6, 4, 2, 0,
+            1, 2, 4, 6, 7, 6, 4, 2,
+            4, 3, 2, 1, 0, 2, 1, 0
+        ];
+        let noteStep = 0;
+
+        function initAudioEngine() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function startTanpuraDrone() {
+            if (!audioCtx || droneOsc1) return;
+            droneGain = audioCtx.createGain();
+            droneGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            droneGain.gain.exponentialRampToValueAtTime(0.035, audioCtx.currentTime + 2.0);
+            droneGain.connect(audioCtx.destination);
+
+            // Sa (C3 = 130.81Hz) and Pa (G3 = 196.00Hz) warm ambient harmonic drone
+            droneOsc1 = audioCtx.createOscillator();
+            droneOsc1.type = 'sine';
+            droneOsc1.frequency.setValueAtTime(130.81, audioCtx.currentTime);
+
+            droneOsc2 = audioCtx.createOscillator();
+            droneOsc2.type = 'triangle';
+            droneOsc2.frequency.setValueAtTime(196.00, audioCtx.currentTime);
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(320, audioCtx.currentTime);
+
+            droneOsc1.connect(filter);
+            droneOsc2.connect(filter);
+            filter.connect(droneGain);
+
+            droneOsc1.start();
+            droneOsc2.start();
+        }
+
+        function stopTanpuraDrone() {
+            if (droneOsc1) {
+                try {
+                    droneOsc1.stop();
+                    droneOsc2.stop();
+                } catch (e) {}
+                droneOsc1 = null;
+                droneOsc2 = null;
+            }
+        }
+
+        function playSantoorChime(freq) {
+            if (!audioCtx || !isPlayingMusic) return;
+            const now = audioCtx.currentTime;
+
+            // Primary plucked string / bell tone
+            const osc = audioCtx.createOscillator();
+            const overtone = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+
+            // Octave shimmer for santoor/chime sparkle
+            overtone.type = 'triangle';
+            overtone.frequency.setValueAtTime(freq * 2, now);
+
+            const overtoneGain = audioCtx.createGain();
+            overtoneGain.gain.setValueAtTime(0.025, now);
+            overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.09, now + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0008, now + 1.8);
+
+            osc.connect(gain);
+            overtone.connect(overtoneGain);
+            overtoneGain.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            overtone.start(now);
+            osc.stop(now + 1.9);
+            overtone.stop(now + 1.9);
+        }
+
+        function startMusic() {
+            try {
+                initAudioEngine();
+                if (isPlayingMusic) return;
+                isPlayingMusic = true;
+                updateMusicButtonUI();
+                startTanpuraDrone();
+
+                // Play first note immediately
+                playSantoorChime(ragaNotes[weddingPhrase[noteStep % weddingPhrase.length]]);
+                noteStep++;
+
+                melodyInterval = setInterval(() => {
+                    if (!isPlayingMusic) return;
+                    const freq = ragaNotes[weddingPhrase[noteStep % weddingPhrase.length]];
+                    playSantoorChime(freq);
+                    noteStep++;
+                }, 620);
+            } catch (err) {
+                console.warn('Audio playback prevented until user gesture:', err);
+            }
+        }
+
+        function stopMusic() {
+            isPlayingMusic = false;
+            updateMusicButtonUI();
+            if (melodyInterval) {
+                clearInterval(melodyInterval);
+                melodyInterval = null;
+            }
+            stopTanpuraDrone();
+        }
+
+        function toggleMusic() {
+            if (isPlayingMusic) {
+                stopMusic();
+                showToast('Celebratory music muted');
+            } else {
+                startMusic();
+                showToast('Playing royal wedding melody 🎶');
+            }
+        }
+
+        function updateMusicButtonUI() {
+            const playingEl = document.getElementById('music-icon-playing');
+            const mutedEl = document.getElementById('music-icon-muted');
+            if (isPlayingMusic) {
+                playingEl.classList.remove('hidden');
+                mutedEl.classList.add('hidden');
+            } else {
+                playingEl.classList.add('hidden');
+                mutedEl.classList.remove('hidden');
+            }
+        }
+
+        /* -------------------------------------------------------------------
+         * 2. ENVELOPE / CURTAIN REVEAL & SCROLL ANIMATIONS
+         * ------------------------------------------------------------------- */
+        function openInvitation() {
+            const overlay = document.getElementById('invitation-overlay');
+            overlay.classList.add('opened');
+            startMusic();
+            triggerScrollReveals();
+        }
+
+        function triggerScrollReveals() {
+            const reveals = document.querySelectorAll('.reveal-up');
+            reveals.forEach((el, idx) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, idx * 180);
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            const reveals = document.querySelectorAll('.reveal-up');
+            reveals.forEach(el => {
+                const top = el.getBoundingClientRect().top;
+                if (top < window.innerHeight - 60) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+
+        /* -------------------------------------------------------------------
+         * 3. RSVP & LIVE BLESSINGS WALL HANDLER
+         * ------------------------------------------------------------------- */
+        let wishCount = 3;
+
+        function handleRsvpSubmit(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('guest-name');
+            const attendanceSelect = document.getElementById('attendance');
+            const blessingInput = document.getElementById('guest-blessing');
+
+            const name = nameInput.value.trim();
+            const status = attendanceSelect.value;
+            const blessing = blessingInput.value.trim();
+
+            if (!name || !blessing) return;
+
+            const list = document.getElementById('blessings-list');
+            const card = document.createElement('div');
+            card.className = 'bg-royalCream border-2 border-royalGold rounded-2xl p-4 shadow-md transition-all duration-500';
+
+            const badgeEmoji = status.includes('Family') ? '👨‍👩‍👧‍👦' : (status.includes('Afar') ? '💐' : '✨');
+
+            const header = document.createElement('div');
+            header.className = 'flex items-center justify-between gap-2 mb-1';
+
+            const title = document.createElement('h4');
+            title.className = 'font-cinzel font-bold text-sm text-royalMaroon';
+            title.textContent = name;
+
+            const badge = document.createElement('span');
+            badge.className = 'text-xs font-cinzel bg-marigold/15 text-marigold px-2.5 py-0.5 rounded-full font-semibold';
+            badge.textContent = `${badgeEmoji} ${status}`;
+
+            header.appendChild(title);
+            header.appendChild(badge);
+
+            const body = document.createElement('p');
+            body.className = 'font-playfair italic text-deepMaroon text-base';
+            body.textContent = `“${blessing}”`;
+
+            card.appendChild(header);
+            card.appendChild(body);
+
+            list.prepend(card);
+
+            wishCount++;
+            document.getElementById('blessing-count').textContent = `${wishCount} Wishes`;
+
+            nameInput.value = '';
+            blessingInput.value = '';
+
+            showToast(`Thank you, ${name}! Your blessing has been added.`);
+        }
+
+        /* -------------------------------------------------------------------
+         * 4. SHARE LINK & CUSTOMIZE MODAL HELPERS
+         * ------------------------------------------------------------------- */
+        function copyInviteLink() {
+            const url = window.location.href;
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast('Invitation link copied! Ready to share with guests.');
+            } catch (e) {
+                showToast('Share this page URL directly with your guests!');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        function toggleCustomizeModal() {
+            const modal = document.getElementById('customize-modal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        function saveEventDetails() {
+            document.getElementById('display-date').textContent = document.getElementById('input-date').value || '14th December 2026';
+            document.getElementById('display-day').textContent = document.getElementById('input-day').value || 'Monday';
+            document.getElementById('display-time').textContent = document.getElementById('input-time').value || '7:30 PM Onwards';
+            document.getElementById('display-venue').textContent = document.getElementById('input-venue').value || 'The Royal Palace Lawn';
+            document.getElementById('display-city').textContent = document.getElementById('input-city').value || 'Grand Heritage Avenue';
+            toggleCustomizeModal();
+            showToast('Wedding card details updated!');
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            const text = document.getElementById('toast-message');
+            text.textContent = msg;
+            box.classList.remove('hidden');
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3400);
+        }
+
+        /* -------------------------------------------------------------------
+         * 5. FLOATING MARIGOLD & ROSE PETALS PARTICLE ANIMATION
+         * ------------------------------------------------------------------- */
+        const canvas = document.getElementById('petals-canvas');
+        const ctx = canvas.getContext('2d');
+        let petals = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const petalColors = [
+            'rgba(230, 108, 31, 0.45)',  // Marigold orange
+            'rgba(232, 197, 90, 0.50)',  // Royal gold
+            'rgba(107, 20, 26, 0.35)',   // Deep rose maroon
+            'rgba(245, 158, 11, 0.45)'   // Saffron yellow
+        ];
+
+        class Petal {
+            constructor() {
+                this.reset(true);
+            }
+            reset(initial = false) {
+                this.x = Math.random() * canvas.width;
+                this.y = initial ? Math.random() * canvas.height : -20;
+                this.size = 5 + Math.random() * 7;
+                this.speedY = 0.6 + Math.random() * 1.1;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = (Math.random() - 0.5) * 0.03;
+                this.color = petalColors[Math.floor(Math.random() * petalColors.length)];
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.angle) * 0.35;
+                this.angle += this.spin;
+                if (this.y > canvas.height + 20) {
+                    this.reset(false);
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initPetals() {
+            const count = window.innerWidth < 640 ? 22 : 38;
+            petals = Array.from({ length: count }, () => new Petal());
+        }
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animatePetals);
+        }
+
+        window.onload = function () {
+            initPetals();
+            animatePetals();
+        };
+    </script>
+</body>
+</html>
